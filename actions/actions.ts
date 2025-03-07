@@ -9,7 +9,6 @@ export async function createPost(formData: FormData) {
       title: formData.get('title') as string,
       slug: (formData.get('title') as string).toLowerCase().replace(/\s/g, '-'),
       content: formData.get('content') as string,
-      image: formData.get('image') as string,
     },
   });
 

@@ -15,7 +15,6 @@ model Post {
   slug      String   @unique
   title     String
   content   String
-  image     String
   createdAt DateTime @default(now())
   published Boolean @default(false)
   updatedAt DateTime @updatedAt
