@@ -1,16 +1,10 @@
-import prisma from '@/lib/db';
+import prisma from "@/lib/db";
 
-export default async function PostsSingularPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  if (!params?.slug) {
-    return <p>Post not found</p>;
-  }
+export default async function PostsSingularPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;  
 
   const post = await prisma.post.findUnique({
-    where: { slug: params.slug },
+    where: { slug },
   });
 
   if (!post) {
