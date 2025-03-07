@@ -9,7 +9,7 @@ export default async function PostsSingularPage({
 }: {
   params: Params;
 }) {
-  const { slug } = await params;
+  const { slug } = params;
 
   const post = await prisma.post.findUnique({
     where: {
