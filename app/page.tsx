@@ -10,9 +10,9 @@ export default function Home() {
       >
         View posts
       </Link>
-      <h1 className='text-4xl'>Welcome to my small blog :3</h1>
+      <h1 className='text-4xl'>Welcome to my Dank diary</h1>
 
-      <h2 className='text-2xl mt-12'>Create a post</h2>
+      <h2 className='text-2xl mt-12'>Create a post or just post your thoughts</h2>
       <form
         className='flex flex-col items-center justify-center w-full max-w-md  p-6 rounded-lg shadow-md'
         action={createPost}
@@ -30,7 +30,7 @@ export default function Home() {
         />
         <button
           type='submit'
-          className='w-full p-2 bg-red-800 text-white rounded-md hover:bg-red-900 focus:outline-none focus:ring-2 focus:ring-red-600'
+          className='w-full p-2 bg-red-800 text-white rounded-md hover:bg-red-900 focus:outline-none focus:ring-2 focus:ring-red-600 cursor-pointer'
         >
           Create post
         </button>
