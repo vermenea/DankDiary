@@ -1,7 +1,13 @@
-import { createPost } from '@/actions/actions';
+'use client';
+
 import Link from 'next/link';
+import { toast } from 'sonner';
+import { createPost} from '@/actions/actions';
+import { useTransition } from 'react';
 
 export default function Home() {
+  const [isPending, startTransition] = useTransition();
+
   return (
     <main className='flex flex-col items-center justify-center min-h-screen py-2'>
       <Link
@@ -12,10 +18,28 @@ export default function Home() {
       </Link>
       <h1 className='text-4xl'>Welcome to my Dank diary</h1>
 
-      <h2 className='text-2xl mt-12'>Create a post or just post your thoughts</h2>
+      <h2 className='text-2xl mt-12'>
+        Create a post or just post your thoughts
+      </h2>
       <form
         className='flex flex-col items-center justify-center w-full max-w-md  p-6 rounded-lg shadow-md'
-        action={createPost}
+        onSubmit={(e) => {
+          e.preventDefault();
+          const fd = new FormData(e.currentTarget);
+          const formEl = e.currentTarget;
+
+          startTransition(async () => {
+            const res = await createPost(fd);
+
+            if (!res.ok) {
+              toast.error(res.message);
+              return;
+            }
+
+            toast.success(res.message);
+            formEl.reset();
+          });
+        }}
       >
         <input
           type='text'
@@ -32,7 +56,7 @@ export default function Home() {
           type='submit'
           className='w-full p-2 bg-red-800 text-white rounded-md hover:bg-red-900 focus:outline-none focus:ring-2 focus:ring-red-600 cursor-pointer'
         >
-          Create post
+          {isPending ? "Creating..." : "Create post"}
         </button>
       </form>
     </main>

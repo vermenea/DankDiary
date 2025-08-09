@@ -1,39 +1,89 @@
 'use server';
 
+import { z } from "zod";
 import prisma from '@/lib/db';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from "next/cache";
+import { slugify } from "@/lib/slug";
 
-export async function createPost(formData: FormData) {
+const PostSchema = z.object({
+  title: z.string().min(1, "Podaj tytuł").max(120),
+  content: z.string().min(1, "Musisz wpisać treść, aby dodać post").max(5000),
+});
+
+type ActionResult = { ok: true; message: string } | { ok: false; message: string };
+
+async function getUniqueSlug(base: string) {
+  const baseSlug = slugify(base) || "post";
+  let s = baseSlug;
+  let i = 1;
+  while (await prisma.post.findUnique({ where: { slug: s } })) {
+    s = `${baseSlug}-${i++}`;
+  }
+  return s;
+}
+
+export async function createPost(formData: FormData): Promise<ActionResult> {
+  const raw = {
+    title: String(formData.get("title") ?? ""),
+    content: String(formData.get("content") ?? ""),
+  };
+
+  const parsed = PostSchema.safeParse(raw);
+  if (!parsed.success) {
+    return { ok: false, message: parsed.error.issues[0]?.message ?? "Błąd walidacji" };
+  }
+
+  const slug = await getUniqueSlug(parsed.data.title);
+
   await prisma.post.create({
     data: {
-      title: formData.get('title') as string,
-      slug: (formData.get('title') as string).toLowerCase().replace(/\s/g, '-'),
-      content: formData.get('content') as string,
+      title: parsed.data.title,
+      content: parsed.data.content,
+      slug,
     },
   });
 
-  revalidatePath('/posts');
+  revalidatePath("/posts");
+  revalidateTag("posts");
+
+  return { ok: true, message: "Dodano post" };
 }
 
-export async function editPost(formData: FormData, id: string) {
+export async function editPost(formData: FormData, id: string): Promise<ActionResult> {
+  const raw = {
+    title: String(formData.get("title") ?? ""),
+    content: String(formData.get("content") ?? ""),
+  };
+
+  const parsed = PostSchema.safeParse(raw);
+  if (!parsed.success) {
+    return { ok: false, message: parsed.error.issues[0]?.message ?? "Błąd walidacji" };
+  }
+
+  const slug = await getUniqueSlug(parsed.data.title);
+
   await prisma.post.update({
-    where: {
-      id: id,
-    },
+    where: { id },
     data: {
-      title: formData.get('title') as string,
-      slug: (formData.get('title') as string).toLowerCase().replace(/\s/g, '-'),
-      content: formData.get('content') as string,
+      title: parsed.data.title,
+      content: parsed.data.content,
+      slug,
     },
   });
+
+  revalidatePath("/posts");
+  revalidateTag("posts");
+
+  return { ok: true, message: "Zaktualizowano post" };
 }
 
-export async function deletePost(id: string) {
-  await prisma.post.delete({
-    where: {
-      id: id,
-    },
-  });
-
-  revalidatePath('/posts');
+export async function deletePost(id: string): Promise<ActionResult> {
+  try {
+    await prisma.post.delete({ where: { id } });
+    revalidatePath("/posts");
+    revalidateTag("posts");
+    return { ok: true, message: "Usunięto post" };
+  } catch {
+    return { ok: false, message: "Nie udało się usunąć posta" };
+  }
 }
