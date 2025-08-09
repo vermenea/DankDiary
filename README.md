@@ -1,22 +1,28 @@
 # DankDiary
 
-Anonimowa tablica online zbudowana w Next.js 13 (App Router), TypeScript, Prisma i Tailwind CSS.  
-Pozwala na szybkie dodawanie i usuwanie anonimowych wpisów bez logowania.
+Post anything. See everything. No shame, no names.
 
 ## Technologie
 
 - Next.js 13 (App Router)  
 - TypeScript  
 - Prisma ORM (PostgreSQL)  
-- Tailwind CSS  
+- Tailwind CSS
+- Zod
 
-## Szybki start
+## Overview
 
-```bash
-# Zainstaluj zależności
-npm install
+DankDiary is an anonymous social feed where anyone can share thoughts, confessions, or rants without worrying about identity.
+It’s a space for honesty, from deep secrets to lighthearted jokes — with real-time updates that keep the feed fresh.
 
-# Uruchom w trybie deweloperskim
-npm run dev
+## Features
 
-# Otwórz http://localhost:3000
+- **Viewing, adding & deleting posts**
+- **Error handling**
+- **Form validation**
+- **Realtime updates**
+
+## Live Demo
+
+A live demo of DankDiary is available [here](https://dank-diary.vercel.app/)
+
