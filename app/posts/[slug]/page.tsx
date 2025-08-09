@@ -25,7 +25,7 @@ export default async function PostsSingularPage({
         Go back home
       </Link>
       <h1>{post.title}</h1>
-      <p>{post.content}</p>
+      <p className='text-center p-2'>{post.content}</p>
     </main>
   );
 }
