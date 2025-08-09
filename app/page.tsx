@@ -16,9 +16,9 @@ export default function Home() {
       >
         View posts
       </Link>
-      <h1 className='text-4xl'>Welcome to my Dank diary</h1>
+      <h1 className='text-4xl text-center'>Welcome to my Dank diary</h1>
 
-      <h2 className='text-2xl mt-12'>
+      <h2 className='text-2xl mt-12 text-center'>
         Create a post or just post your thoughts
       </h2>
       <form
